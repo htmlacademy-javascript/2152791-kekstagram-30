@@ -8,6 +8,8 @@ const isLength = function (string, quantitySymbols) {
   }
 };
 
+isLength('проверяемая строка', 20);
+
 // Функция для проверки, является ли строка палиндромом
 
 const isPalindrome = function (palindrome) {
@@ -20,6 +22,8 @@ const isPalindrome = function (palindrome) {
     return true;
   } return false;
 };
+
+isPalindrome('шалаш');
 
 // Функция принимает строку, извлекает содержащиеся в ней цифры от 0 до 9 и возвращает их в виде целого положительного числа
 // Без усложнения
@@ -36,3 +40,5 @@ const createNumber = function (string) {
   }
   return (newString === '') ? NaN : Number(newString);
 };
+
+createNumber('Agent007');

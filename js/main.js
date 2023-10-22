@@ -43,25 +43,25 @@ for (let i = 1; i <= 25; i++) {
   numbersPhoto = numbersPhoto.sort(() => Math.random() - 0.5);
 }
 
+//Create comment
+const createUser = () => {
+  const getRandomId = generateRandomNumber(1, 1000000);
+  const getRandomAvatar = 'img/avatar-' + generateRandomNumber(1, 6) + '.svg';
+  const getRandomMessage = generateRandomNumber(0, MESSAGES.length - 1);
+  const getRandomName = generateRandomNumber(0, NAMES.length - 1);
+
+  return {
+    id: getRandomId,
+    avatar: getRandomAvatar,
+    message: MESSAGES[getRandomMessage],
+    name: NAMES[getRandomName],
+  };
+};
+
 //Create main function
 const createRandomSpecification = () => {
   const getRandomLikes = generateRandomNumber(MIN_LIKES, MAX_LIKES);
   const getRandomDescription = generateRandomNumber(0, DESCRIPTION.length - 1);
-
-  //Create comment
-  const createUser = () => {
-    const getRandomId = generateRandomNumber(1, 1000000);
-    const getRandomAvatar = 'img/avatar-' + generateRandomNumber(1, 6) + '.svg';
-    const getRandomMessage = generateRandomNumber(0, MESSAGES.length - 1);
-    const getRandomName = generateRandomNumber(0, NAMES.length - 1);
-
-    return {
-      id: getRandomId,
-      avatar: getRandomAvatar,
-      message: MESSAGES[getRandomMessage],
-      name: NAMES[getRandomName],
-    };
-  };
   const someComments = Array.from({ length: generateRandomNumber(0, 30) }, createUser);
 
   return {
@@ -73,3 +73,5 @@ const createRandomSpecification = () => {
   };
 };
 const randomSpecification = Array.from({ length: 25 }, createRandomSpecification);
+
+randomSpecification();
