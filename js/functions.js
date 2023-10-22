@@ -1,5 +1,19 @@
-// Функция для проверки длины строки
+//Create comment
+const createUser = () => {
+  const getRandomId = generateRandomNumber(1, 1000000);
+  const getRandomAvatar = 'img/avatar-' + generateRandomNumber(1, 6) + '.svg';
+  const getRandomMessage = generateRandomNumber(0, MESSAGES.length - 1);
+  const getRandomName = generateRandomNumber(0, NAMES.length - 1);
 
+  return {
+    id: getRandomId,
+    avatar: getRandomAvatar,
+    message: MESSAGES[getRandomMessage],
+    name: NAMES[getRandomName],
+  };
+};
+
+//Check length
 const isLength = function (string, quantitySymbols) {
   if (string.length <= quantitySymbols) {
     return true;
@@ -8,10 +22,7 @@ const isLength = function (string, quantitySymbols) {
   }
 };
 
-isLength('проверяемая строка', 20);
-
-// Функция для проверки, является ли строка палиндромом
-
+//Palindrome
 const isPalindrome = function (palindrome) {
   palindrome = palindrome.toString().toLowerCase().replaceAll(' ', '');
   let newWord = '';
@@ -23,11 +34,7 @@ const isPalindrome = function (palindrome) {
   } return false;
 };
 
-isPalindrome('шалаш');
-
-// Функция принимает строку, извлекает содержащиеся в ней цифры от 0 до 9 и возвращает их в виде целого положительного числа
-// Без усложнения
-
+//Create number
 const createNumber = function (string) {
 
   let newString = '';
@@ -41,4 +48,30 @@ const createNumber = function (string) {
   return (newString === '') ? NaN : Number(newString);
 };
 
-createNumber('Agent007');
+//Time
+let isMeet = (start, end, meet, duration) => {
+
+  const starting = start.split(':');
+  const startHours = parseInt(starting[0], 10) * 60;
+  const startMinutes = startHours + parseInt(starting[1], 10);
+
+  const ending = end.split(':');
+  const endHours = parseInt(ending[0], 10) * 60;
+  const endMinutes = endHours + parseInt(ending[1], 10);
+
+  const meeting = meet.split(':');
+  const meetHours = parseInt(meeting[0], 10) * 60;
+  const meetMinutes = meetHours + parseInt(meeting[1], 10);
+
+  if (meetMinutes >= startMinutes && meetMinutes <= endMinutes && (meetMinutes + duration) <= endMinutes) {
+    return true;
+  } return false;
+
+};
+
+isMeet('08:00', '17:30', '14:00', 90);
+
+export { createUser };
+export { isLength };
+export { isPalindrome };
+export { createNumber };
