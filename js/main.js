@@ -1,3 +1,3 @@
 import { randomSpecification } from './specification.js';
 
-randomSpecification();
+console.log(randomSpecification);
