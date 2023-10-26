@@ -1,23 +1,10 @@
+import { generateRandomNumber } from './util.js';
+import { createUser } from './functions.js';
+
 let numbersId = [];
 let numbersPhoto = [];
 const MIN_LIKES = 15;
 const MAX_LIKES = 200;
-
-const MESSAGES = [
-  'Всё отлично!',
-  'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадр В конце концов это просто непрофессионально.',
-  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
-];
-
-const NAMES = [
-  'Tim',
-  'Maya',
-  'Sam',
-  'Van',
-  'Ilya',
-];
 
 const DESCRIPTION = [
   'Я и батя',
@@ -51,4 +38,4 @@ const createRandomSpecification = () => {
 };
 const randomSpecification = Array.from({ length: 25 }, createRandomSpecification);
 
-export{randomSpecification};
+export { randomSpecification };

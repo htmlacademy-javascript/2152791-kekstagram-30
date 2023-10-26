@@ -1,3 +1,21 @@
+import { generateRandomNumber } from './util.js';
+
+const MESSAGES = [
+  'Всё отлично!',
+  'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадр В конце концов это просто непрофессионально.',
+  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
+  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
+  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
+];
+
+const NAMES = [
+  'Tim',
+  'Maya',
+  'Sam',
+  'Van',
+  'Ilya',
+];
+
 //Create comment
 const createUser = () => {
   const getRandomId = generateRandomNumber(1, 1000000);
@@ -13,65 +31,4 @@ const createUser = () => {
   };
 };
 
-//Check length
-const isLength = function (string, quantitySymbols) {
-  if (string.length <= quantitySymbols) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-//Palindrome
-const isPalindrome = function (palindrome) {
-  palindrome = palindrome.toString().toLowerCase().replaceAll(' ', '');
-  let newWord = '';
-  for (let i = palindrome.length - 1; i >= 0; i--) {
-    newWord += palindrome[i];
-  }
-  if (palindrome === newWord) {
-    return true;
-  } return false;
-};
-
-//Create number
-const createNumber = function (string) {
-
-  let newString = '';
-
-  for (let i = 0; i <= string.length - 1; i++) {
-    if (!Number.isNaN(parseInt(string[i], 10))) {
-      newString += string[i];
-      newString = newString.replace(/^0+/, '');
-    }
-  }
-  return (newString === '') ? NaN : Number(newString);
-};
-
-//Time
-let isMeet = (start, end, meet, duration) => {
-
-  const starting = start.split(':');
-  const startHours = parseInt(starting[0], 10) * 60;
-  const startMinutes = startHours + parseInt(starting[1], 10);
-
-  const ending = end.split(':');
-  const endHours = parseInt(ending[0], 10) * 60;
-  const endMinutes = endHours + parseInt(ending[1], 10);
-
-  const meeting = meet.split(':');
-  const meetHours = parseInt(meeting[0], 10) * 60;
-  const meetMinutes = meetHours + parseInt(meeting[1], 10);
-
-  if (meetMinutes >= startMinutes && meetMinutes <= endMinutes && (meetMinutes + duration) <= endMinutes) {
-    return true;
-  } return false;
-
-};
-
-isMeet('08:00', '17:30', '14:00', 90);
-
 export { createUser };
-export { isLength };
-export { isPalindrome };
-export { createNumber };
