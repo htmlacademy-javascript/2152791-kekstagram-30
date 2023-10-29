@@ -6,4 +6,4 @@ const generateRandomNumber = (min, max) => {
   return Math.floor(result);
 };
 
-export{generateRandomNumber};
+export { generateRandomNumber };
