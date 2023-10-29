@@ -1,5 +1,5 @@
 import { generateRandomNumber } from './util.js';
-import { createUser } from './functions.js';
+import { createUser } from './data.js';
 
 let numbersId = [];
 let numbersPhoto = [];
