@@ -30,7 +30,7 @@ const createRandomSpecification = () => {
 
   return {
     id: numbersId.pop(),
-    url: 'photos/' + numbersPhoto.pop() + '.jpg',
+    url: `photos/${numbersPhoto.pop()}.jpg`,
     description: DESCRIPTION[getRandomDescription],
     likes: getRandomLikes,
     comments: someComments,

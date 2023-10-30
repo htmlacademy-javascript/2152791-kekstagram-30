@@ -19,7 +19,7 @@ const NAMES = [
 //Create comment
 const createUser = () => {
   const getRandomId = generateRandomNumber(1, 1000000);
-  const getRandomAvatar = 'img/avatar-' + generateRandomNumber(1, 6) + '.svg';
+  const getRandomAvatar = `img/avatar-${generateRandomNumber(1, 6)}.svg`;
   const getRandomMessage = generateRandomNumber(0, MESSAGES.length - 1);
   const getRandomName = generateRandomNumber(0, NAMES.length - 1);
 

@@ -1,3 +1,1 @@
-import { randomSpecification } from './specification.js';
-
-console.log(randomSpecification);
+import './rendering.js';

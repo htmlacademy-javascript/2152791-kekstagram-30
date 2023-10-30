@@ -14,4 +14,4 @@ const isMeeting = (start, end, meet, duration) => {
   } return false;
 };
 
-console.log(isMeeting('08:00', '17:30', '14:00', 90));
+isMeeting('08:00', '17:30', '14:00', 90);
