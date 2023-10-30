@@ -10,9 +10,7 @@ randomPictures.forEach(({ url, likes, description, comments }) => {
   picturesElement.querySelector('.picture__img').src = url;
   picturesElement.querySelector('.picture__img').alt = description;
   picturesElement.querySelector('.picture__likes').textContent = likes;
-  comments.forEach((comment) => {
-    picturesElement.querySelector('.picture__comments').textContent = comment.id + comment.avatar + comment.message + comment.name;
-  });
+  picturesElement.querySelector('.picture__comments').textContent = comments.length;
   picturesListFragment.appendChild(picturesElement);
 });
 
