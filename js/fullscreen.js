@@ -38,13 +38,13 @@ const openPicture = () => {
         for (let i = 0; i < allUserComments.length - 5; i++) {
           allUserComments[i].classList.remove('hidden');
         }
-        let hidden = 0;
+        let hiddenClass = 0;
         for (let i = 0; i < allUserComments.length; i++) {
           if (!allUserComments[i].classList.contains('hidden')) {
-            hidden += 1;
+            hiddenClass += 1;
           }
         }
-        shownComments.textContent = hidden;
+        shownComments.textContent = hiddenClass;
       });
 
       bigPictureLikes.textContent = smallPictureLikes.textContent;
