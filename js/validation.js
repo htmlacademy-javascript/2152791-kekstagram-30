@@ -77,3 +77,32 @@ document.addEventListener('keydown', (event) => {
     editPhotoButton.reset();
   }
 });
+
+//Validation
+const imageUploadForm = document.querySelector('.img-upload__form');
+const hashValue = document.querySelector('.text__hashtags');
+const errorForm = document.querySelector('.img-upload__field-wrapper');
+
+const pristine = new Pristine(imageUploadForm, {
+  classTo: 'text__hashtags',
+  errorClass: 'img-upload__field-wrapper--error',
+  successClass: '',
+  errorTextParent: 'text__hashtags',
+  errorTextTag: 'span',
+  errorTextClass: ''
+});
+
+function validateHasgtag() {
+  return !hashValue.value.startsWith('#');
+}
+
+pristine.addValidator(
+  imageUploadForm.querySelector('.text__hashtags'),
+  validateHasgtag,
+  errorForm.classList.add('img-upload__field-wrapper--error'),
+);
+
+imageUploadForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  pristine.validate();
+});
