@@ -4,7 +4,23 @@ const editPhotoOverlay = document.querySelector('.img-upload__overlay');
 const downloadPhoto = document.getElementById('download');
 const preloadPhoto = document.getElementById('upload-file');
 const body = document.querySelector('.body');
+const imageUploadForm = document.querySelector('.img-upload__form');
+const reduceButton = document.querySelector('.scale__control--smaller');
+const increaseButton = document.querySelector('.scale__control--bigger');
+const scaleValue = document.querySelector('.scale__control--value');
+const closePhotoEditButton = document.querySelector('.img-upload__cancel');
+const hashTag = document.querySelector('.text__hashtags');
+const hashtagSymbols = /^#[a-zа-яё0-9]{1,19}$/i;
+const stepValue = 25;
+let defaultValue = 100;
 
+const pristine = new Pristine(imageUploadForm, {
+  classTo: 'img-upload__field-wrapper',
+  errorTextParent: 'img-upload__field-wrapper',
+  errorTextClass: 'img-upload__field-wrapper--error'
+});
+
+//Open edit photos
 editPhotoButton.addEventListener('click', () => {
   editPhotoOverlay.classList.remove('hidden');
   body.classList.add('modal-open');
@@ -17,13 +33,26 @@ preloadPhoto.onchange = () => {
   }
 };
 
-//Scale photos
-const reduceButton = document.querySelector('.scale__control--smaller');
-const increaseButton = document.querySelector('.scale__control--bigger');
-const scaleValue = document.querySelector('.scale__control--value');
-const stepValue = 25;
-let defaultValue = 100;
+//Close edit photos
+closePhotoEditButton.addEventListener('click', () => {
+  editPhotoOverlay.classList.add('hidden');
+  body.classList.remove('modal-open');
+  editPhotoButton.value = '';
+  imageUploadForm.reset();
+  pristine.reset();
+});
 
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    editPhotoOverlay.classList.add('hidden');
+    body.classList.remove('modal-open');
+    downloadPhoto.src = '';
+    editPhotoButton.reset();
+  }
+});
+
+//Scale photos
 reduceButton.addEventListener('click', () => {
   if (defaultValue <= 25) {
     return;
@@ -58,48 +87,48 @@ increaseButton.addEventListener('click', () => {
   scaleValue.value = `${defaultValue}%`;
 });
 
-//Close edit photos
-const closePhotoEditButton = document.querySelector('.img-upload__cancel');
-
-closePhotoEditButton.addEventListener('click', () => {
-  editPhotoOverlay.classList.add('hidden');
-  body.classList.remove('modal-open');
-  downloadPhoto.src = '';
-  editPhotoButton.reset();
-});
-
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    event.preventDefault();
-    editPhotoOverlay.classList.add('hidden');
-    body.classList.remove('modal-open');
-    downloadPhoto.src = '';
-    editPhotoButton.reset();
-  }
-});
-
 //Validation
-const imageUploadForm = document.querySelector('.img-upload__form');
-const hashValue = document.querySelector('.text__hashtags');
-const errorForm = document.querySelector('.img-upload__field-wrapper');
 
-const pristine = new Pristine(imageUploadForm, {
-  classTo: 'text__hashtags',
-  errorClass: 'img-upload__field-wrapper--error',
-  successClass: '',
-  errorTextParent: 'text__hashtags',
-  errorTextTag: 'span',
-  errorTextClass: ''
-});
+/*
+hashTag.onchange = () => {
+  hashArray = [];
+  hashArray.push(hashTag.value);
+  newHashArray = hashArray[0].split(' ');
+};
 
-function validateHasgtag() {
-  return !hashValue.value.startsWith('#');
+function validateHashtagStart () {
+  return newHashArray.length <= 2;
+}
+*/
+
+function validateHashtagFirst (value) {
+  return value.startsWith('#');
+}
+
+function validateHashtagSymbols (value) {
+  return hashtagSymbols.test(value);
+}
+
+function validateHashtagLength (value) {
+  return value.length <= 19;
 }
 
 pristine.addValidator(
-  imageUploadForm.querySelector('.text__hashtags'),
-  validateHasgtag,
-  errorForm.classList.add('img-upload__field-wrapper--error'),
+  hashTag,
+  validateHashtagFirst,
+  'Хештег должен начинаться с #'
+);
+
+pristine.addValidator(
+  hashTag,
+  validateHashtagSymbols,
+  'Хештег не должен содержать спецсимволов'
+);
+
+pristine.addValidator(
+  hashTag,
+  validateHashtagLength,
+  'Не более 20 символов'
 );
 
 imageUploadForm.addEventListener('submit', (evt) => {
