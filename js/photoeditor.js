@@ -9,6 +9,8 @@ const reduceButton = document.querySelector('.scale__control--smaller');
 const increaseButton = document.querySelector('.scale__control--bigger');
 const scaleValue = document.querySelector('.scale__control--value');
 const closePhotoEditButton = document.querySelector('.img-upload__cancel');
+const effectStyle = document.querySelector('.img-upload__preview');
+const effectPreviews = document.querySelectorAll('.effects__preview');
 const hashtagSymbols = /^#[a-zа-яё0-9]{1,19}$/i;
 const stepValue = 25;
 let defaultValue = 100;
@@ -20,35 +22,37 @@ const pristine = new Pristine(imageUploadForm, {
 });
 
 //Open modal
-editPhotoButton.addEventListener('click', () => {
-  editPhotoOverlay.classList.remove('hidden');
-  body.classList.add('modal-open');
-});
-
 preloadPhoto.onchange = () => {
   const preloadPhotoFile = preloadPhoto.files[0];
+
+  editPhotoOverlay.classList.remove('hidden');
+  body.classList.add('modal-open');
   if (preloadPhotoFile) {
-    downloadPhoto.src = URL.createObjectURL(preloadPhotoFile);
+    const preloadPhotoUrl = URL.createObjectURL(preloadPhotoFile);
+    downloadPhoto.src = preloadPhotoUrl;
+    effectPreviews.forEach((preview) => {
+      preview.style.backgroundImage = 'url(preloadPhotoUrl)';
+    });
   }
 };
 
 //Close modal
-closePhotoEditButton.addEventListener('click', () => {
+const closeModal = () => {
   editPhotoOverlay.classList.add('hidden');
   body.classList.remove('modal-open');
   imageUploadForm.reset();
-  editPhotoButton.reset();
   pristine.reset();
+  editPhotoButton.value = '';
+};
+
+closePhotoEditButton.addEventListener('click', () => {
+  closeModal();
 });
 
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
     event.preventDefault();
-    editPhotoOverlay.classList.add('hidden');
-    body.classList.remove('modal-open');
-    imageUploadForm.reset();
-    editPhotoButton.reset();
-    pristine.reset();
+    closeModal();
   }
 });
 
@@ -95,7 +99,7 @@ const isValidSymbols = (value) => hashtagSymbols.test(value);
 function hashtagValidateSymbols(value) {
   const hashtags = value.toLowerCase().split(' ');
 
-  if (hashtags.every(isValidSymbols) || hashTag.value === 0) {
+  if (hashtags.every(isValidSymbols) || hashTag.value === '') {
     return true;
   }
 }
@@ -159,7 +163,7 @@ commentArea.addEventListener('keydown', (evt) => {
 });
 
 imageUploadForm.addEventListener('submit', (evt) => {
-  if(!pristine.validate()) {
+  if (!pristine.validate()) {
     evt.preventDefault();
   }
 });
@@ -168,7 +172,6 @@ imageUploadForm.addEventListener('submit', (evt) => {
 const sliderElement = document.querySelector('.effect-level__slider');
 const sliderWrapper = document.querySelector('.img-upload__effect-level');
 const effectValue = document.querySelector('.effect-level__value');
-const effectStyle = document.querySelector('.img-upload__preview');
 const originalEffect = document.getElementById('effect-none');
 const chromeEffect = document.getElementById('effect-chrome');
 const sepiaEffect = document.getElementById('effect-sepia');

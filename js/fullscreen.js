@@ -76,6 +76,8 @@ loaderButton.addEventListener('click', (event) => {
   for (let i = shownCommentsCount; i <= shownCommentsCount + (numberOfLoadedComments - 1); i++) {
     if (i <= commentsList.length) {
       commentsList[i].classList.remove('hidden');
+    } else if (commentsList[i] >= shownCommentsCount) {
+      return;
     }
 
     if (i + 1 === shownCommentsCount + numberOfLoadedComments || i + 1 === commentsList.length) {
