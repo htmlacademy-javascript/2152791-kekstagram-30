@@ -12,7 +12,7 @@ const commentTemplate = document.querySelector('#comment').content.querySelector
 const loaderButton = document.querySelector('.social__comments-loader');
 const closeButton = document.querySelector('.big-picture__cancel');
 const shownComments = document.querySelector('.social__comment-shown-count');
-const numberOfLoadedComments = 5;
+const NUMBER_OF_LOADED_COMMENTS = 5;
 
 //Open function
 const openPicture = () => {
@@ -35,11 +35,11 @@ const openPicture = () => {
 
       const allUserComments = document.querySelectorAll('.social__comment');
       allUserComments.forEach((comment) => {
-        if (allUserComments.length <= numberOfLoadedComments) {
+        if (allUserComments.length <= NUMBER_OF_LOADED_COMMENTS) {
           comment.classList.remove('hidden');
         } else {
           comment.classList.add('hidden');
-          for (let i = 0; i < numberOfLoadedComments; i++) {
+          for (let i = 0; i < NUMBER_OF_LOADED_COMMENTS; i++) {
             allUserComments[i].classList.remove('hidden');
           }
         }
@@ -69,18 +69,11 @@ loaderButton.addEventListener('click', (event) => {
   const commentsList = Array.from(event.target.previousElementSibling.children);
   const shownCommentsCount = commentsList.filter((element) => !element.classList.contains('hidden')).length;
 
-  if (shownCommentsCount >= commentsList.length) {
-    return;
-  }
-
-  for (let i = shownCommentsCount; i <= shownCommentsCount + (numberOfLoadedComments - 1); i++) {
+  for (let i = shownCommentsCount; i < shownCommentsCount + NUMBER_OF_LOADED_COMMENTS && i < commentsList.length; i++) {
     if (i <= commentsList.length) {
       commentsList[i].classList.remove('hidden');
     }
-
-    if (i + 1 === shownCommentsCount + numberOfLoadedComments || i + 1 === commentsList.length) {
-      shownCommentsCounElement.textContent = i + 1;
-    }
+    shownCommentsCounElement.textContent = i + 1;
   }
 });
 
