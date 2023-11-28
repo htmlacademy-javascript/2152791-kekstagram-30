@@ -96,6 +96,7 @@ const hashTag = document.querySelector('.text__hashtags');
 const commentArea = document.querySelector('.text__description');
 
 const isValidSymbols = (value) => hashtagSymbols.test(value);
+
 function hashtagValidateSymbols(value) {
   const hashtags = value.toLowerCase().split(' ');
 
@@ -113,8 +114,9 @@ function hashtagValidateLength(value) {
 }
 
 function hashtagValidateDifference(value) {
-  const hashtags = value.toLowerCase().split(' ');
   const countHashtags = {};
+
+  const hashtags = value.toLowerCase().split(' ');
 
   for (const hashtag of hashtags) {
     countHashtags[hashtag] = countHashtags[hashtag] ? countHashtags[hashtag] + 1 : 1;
