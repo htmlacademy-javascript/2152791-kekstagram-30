@@ -31,7 +31,7 @@ preloadPhoto.onchange = () => {
     const preloadPhotoUrl = URL.createObjectURL(preloadPhotoFile);
     downloadPhoto.src = preloadPhotoUrl;
     effectPreviews.forEach((preview) => {
-      preview.style.backgroundImage = 'url(preloadPhotoUrl)';
+      preview.style.backgroundImage = `url(${preloadPhotoUrl})`;
     });
   }
 };
