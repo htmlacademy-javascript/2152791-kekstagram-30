@@ -12,8 +12,6 @@ const closePhotoEditButton = document.querySelector('.img-upload__cancel');
 const effectStyle = document.querySelector('.img-upload__preview');
 const effectPreviews = document.querySelectorAll('.effects__preview');
 const hashtagSymbols = /^#[a-zа-яё0-9]{1,19}$/i;
-const stepValue = 25;
-let defaultValue = 100;
 
 const pristine = new Pristine(imageUploadForm, {
   classTo: 'img-upload__field-wrapper',
@@ -21,12 +19,12 @@ const pristine = new Pristine(imageUploadForm, {
   errorTextClass: 'img-upload__field-wrapper--error'
 });
 
-//Open modal
+//Full screen
 preloadPhoto.onchange = () => {
+
+  openModal();
   const preloadPhotoFile = preloadPhoto.files[0];
 
-  editPhotoOverlay.classList.remove('hidden');
-  body.classList.add('modal-open');
   if (preloadPhotoFile) {
     const preloadPhotoUrl = URL.createObjectURL(preloadPhotoFile);
     downloadPhoto.src = preloadPhotoUrl;
@@ -36,27 +34,10 @@ preloadPhoto.onchange = () => {
   }
 };
 
-//Close modal
-const closeModal = () => {
-  editPhotoOverlay.classList.add('hidden');
-  body.classList.remove('modal-open');
-  imageUploadForm.reset();
-  pristine.reset();
-  editPhotoButton.value = '';
-};
-
-closePhotoEditButton.addEventListener('click', () => {
-  closeModal();
-});
-
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    event.preventDefault();
-    closeModal();
-  }
-});
-
 //Scale photos
+const stepValue = 25;
+let defaultValue = 100;
+
 reduceButton.addEventListener('click', () => {
   if (defaultValue <= 25) {
     return;
@@ -89,85 +70,6 @@ increaseButton.addEventListener('click', () => {
     downloadPhoto.style.transform = 'scale(0.25)';
   }
   scaleValue.value = `${defaultValue}%`;
-});
-
-//Validation
-const hashTag = document.querySelector('.text__hashtags');
-const commentArea = document.querySelector('.text__description');
-
-const isValidSymbols = (value) => hashtagSymbols.test(value);
-
-function hashtagValidateSymbols(value) {
-  const hashtags = value.toLowerCase().split(' ');
-
-  if (hashtags.every(isValidSymbols) || hashTag.value === '') {
-    return true;
-  }
-}
-
-function hashtagValidateLength(value) {
-  const hashtags = value.toLowerCase().split(' ');
-
-  if (hashtags.length <= 5) {
-    return true;
-  }
-}
-
-function hashtagValidateDifference(value) {
-  const countHashtags = {};
-
-  const hashtags = value.toLowerCase().split(' ');
-
-  for (const hashtag of hashtags) {
-    countHashtags[hashtag] = countHashtags[hashtag] ? countHashtags[hashtag] + 1 : 1;
-  }
-
-  const result = Object.keys(countHashtags).filter((hashtag) => countHashtags[hashtag] > 1);
-  if (result.length === 0) {
-    return true;
-  }
-}
-
-pristine.addValidator(
-  hashTag,
-  hashtagValidateSymbols,
-  'Введите корректный хештег'
-);
-
-pristine.addValidator(
-  hashTag,
-  hashtagValidateLength,
-  'Превышено количество хэш-тегов'
-);
-
-pristine.addValidator(
-  hashTag,
-  hashtagValidateDifference,
-  'Хэш-теги повторяются'
-);
-
-hashTag.addEventListener('keydown', (evt) => {
-  evt.stopPropagation();
-});
-
-function validateCommentLength(value) {
-  return value.length <= 140;
-}
-
-pristine.addValidator(
-  commentArea,
-  validateCommentLength,
-  'Длина комментария больше 140 символов'
-);
-
-commentArea.addEventListener('keydown', (evt) => {
-  evt.stopPropagation();
-});
-
-imageUploadForm.addEventListener('submit', (evt) => {
-  if (!pristine.validate()) {
-    evt.preventDefault();
-  }
 });
 
 //Sliders
@@ -311,3 +213,224 @@ heatEffect.addEventListener('click', () => {
     effectStyle.style.filter = heatIntensity;
   });
 });
+
+//Util button
+const escapeButton = (evt) => evt.key === 'Escape';
+
+//Open/close modal
+const openModal = () => {
+  editPhotoOverlay.classList.remove('hidden');
+  body.classList.add('modal-open');
+  document.addEventListener('keydown', onDocumentKeydown);
+}
+
+const closeModal = () => {
+  editPhotoOverlay.classList.add('hidden');
+  body.classList.remove('modal-open');
+  imageUploadForm.reset();
+  pristine.reset();
+  editPhotoButton.value = '';
+  effectStyle.style.filter = null;
+  sliderElement.classList.add('hidden');
+  sliderWrapper.classList.add('hidden');
+  downloadPhoto.style.transform = 'scale(1)';
+  document.removeEventListener('keydown', onDocumentKeydown);
+}
+
+const onDocumentKeydown = (evt) => {
+  if (escapeButton(evt)) {
+    evt.preventDefault();
+    closeModal();
+  }
+};
+
+closePhotoEditButton.addEventListener('click', () => {
+  closeModal();
+});
+
+//Error message
+const errorUpload = () => {
+  const ERROR_TIME = 5000;
+  const errorUploadTemplate = document.querySelector('#error').content.querySelector('.error');
+  const errorUploadElement = errorUploadTemplate.cloneNode(true);
+  const errorButton = errorUploadElement.querySelector('.error__button');
+  body.appendChild(errorUploadElement);
+
+  errorButton.addEventListener('click', () => {
+    body.removeChild(errorUploadElement);
+  });
+
+  document.addEventListener( 'click', (evt) => {
+    if (errorUploadTemplate.contains(evt.target)){
+      body.removeChild(errorUploadElement);
+    }
+  })
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      body.removeChild(errorUploadElement);
+    }
+  });
+
+  setTimeout(() => {
+    body.removeChild(errorUploadElement);
+  }, ERROR_TIME);
+};
+
+//Validation
+const hashTag = document.querySelector('.text__hashtags');
+const commentArea = document.querySelector('.text__description');
+
+const isValidSymbols = (value) => hashtagSymbols.test(value);
+
+function hashtagValidateSymbols(value) {
+  const hashtags = value.toLowerCase().split(' ');
+
+  if (hashtags.every(isValidSymbols) || hashTag.value === '') {
+    return true;
+  }
+}
+
+function hashtagValidateLength(value) {
+  const hashtags = value.toLowerCase().split(' ');
+
+  if (hashtags.length <= 5) {
+    return true;
+  }
+}
+
+function hashtagValidateDifference(value) {
+  const countHashtags = {};
+
+  const hashtags = value.toLowerCase().split(' ');
+
+  for (const hashtag of hashtags) {
+    countHashtags[hashtag] = countHashtags[hashtag] ? countHashtags[hashtag] + 1 : 1;
+  }
+
+  const result = Object.keys(countHashtags).filter((hashtag) => countHashtags[hashtag] > 1);
+  if (result.length === 0) {
+    return true;
+  }
+}
+
+pristine.addValidator(
+  hashTag,
+  hashtagValidateSymbols,
+  'Введите корректный хештег'
+);
+
+pristine.addValidator(
+  hashTag,
+  hashtagValidateLength,
+  'Превышено количество хэш-тегов'
+);
+
+pristine.addValidator(
+  hashTag,
+  hashtagValidateDifference,
+  'Хэш-теги повторяются'
+);
+
+hashTag.addEventListener('keydown', (evt) => {
+  evt.stopPropagation();
+});
+
+function validateCommentLength(value) {
+  return value.length <= 140;
+}
+
+pristine.addValidator(
+  commentArea,
+  validateCommentLength,
+  'Длина комментария больше 140 символов'
+);
+
+commentArea.addEventListener('keydown', (evt) => {
+  evt.stopPropagation();
+});
+
+//Block button
+const submitButton = document.querySelector('.img-upload__submit');
+
+const submitButtonText = {
+  STATIC: 'Опубликовать',
+  LOADING: 'Загрузка...'
+};
+
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = submitButtonText.LOADING;
+};
+
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = submitButtonText.STATIC;
+};
+
+//Success message
+const successMessage = () => {
+  const SUCCESS_TIME = 5000;
+  const successTemplate = document.querySelector('#success').content.querySelector('.success');
+  const successElement = successTemplate.cloneNode(true);
+  const successElementButton = successElement.querySelector('.success__button');
+  body.appendChild(successElement);
+
+  successElementButton.addEventListener('click', () => {
+    body.removeChild(successElement);
+  });
+
+  document.addEventListener( 'click', (evt) => {
+    if (successTemplate.contains(evt.target)){
+      console.log('!');
+      body.removeChild(successElement);
+    }
+  })
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      body.removeChild(successElement);
+    }
+  });
+
+  setTimeout(() => {
+    body.removeChild(successElement);
+  }, SUCCESS_TIME);
+};
+
+//Final
+const formSubmit = (onSuccess) => {
+  imageUploadForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    const isValid = pristine.validate();
+    if (isValid) {
+      const formData = new FormData(evt.target);
+      blockSubmitButton();
+
+      fetch(
+        'https://30.javascript.pages.academy/kekstagram',
+        {
+          method: 'POST',
+          body: formData,
+        },
+      )
+      .then((response) => {
+        if (response.ok) {
+          onSuccess();
+        } else {
+          errorUpload();
+        }
+      })
+      .then(() => {
+        successMessage();
+      })
+      .catch(() => {
+        errorUpload();
+      })     
+      .finally(unblockSubmitButton)
+    }
+  });
+};
+
+export { formSubmit, closeModal };
