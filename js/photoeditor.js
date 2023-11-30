@@ -13,11 +13,54 @@ const effectStyle = document.querySelector('.img-upload__preview');
 const effectPreviews = document.querySelectorAll('.effects__preview');
 const hashtagSymbols = /^#[a-zа-яё0-9]{1,19}$/i;
 
+const sliderElement = document.querySelector('.effect-level__slider');
+const sliderWrapper = document.querySelector('.img-upload__effect-level');
+const effectValue = document.querySelector('.effect-level__value');
+const originalEffect = document.getElementById('effect-none');
+const chromeEffect = document.getElementById('effect-chrome');
+const sepiaEffect = document.getElementById('effect-sepia');
+const marvinEffect = document.getElementById('effect-marvin');
+const phobosEffect = document.getElementById('effect-phobos');
+const heatEffect = document.getElementById('effect-heat');
+
 const pristine = new Pristine(imageUploadForm, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
   errorTextClass: 'img-upload__field-wrapper--error'
 });
+
+//Open/close modal
+
+/* eslint-disable */
+const openModal = () => {
+  editPhotoOverlay.classList.remove('hidden');
+  body.classList.add('modal-open');
+  document.addEventListener('keydown', onModalKeydown);
+};
+
+const closeModal = () => {
+  editPhotoOverlay.classList.add('hidden');
+  body.classList.remove('modal-open');
+  imageUploadForm.reset();
+  pristine.reset();
+  editPhotoButton.value = '';
+  effectStyle.style.filter = null;
+  sliderElement.classList.add('hidden');
+  sliderWrapper.classList.add('hidden');
+  downloadPhoto.style.transform = 'scale(1)';
+  document.removeEventListener('keydown', onModalKeydown);
+};
+
+const onModalKeydown = (evt) => {
+  if (evt.key === 'Escape') {
+    closeModal();
+  }
+};
+
+closePhotoEditButton.addEventListener('click', () => {
+  closeModal();
+});
+/* eslint-enable */
 
 //Full screen
 preloadPhoto.onchange = () => {
@@ -73,16 +116,6 @@ increaseButton.addEventListener('click', () => {
 });
 
 //Sliders
-const sliderElement = document.querySelector('.effect-level__slider');
-const sliderWrapper = document.querySelector('.img-upload__effect-level');
-const effectValue = document.querySelector('.effect-level__value');
-const originalEffect = document.getElementById('effect-none');
-const chromeEffect = document.getElementById('effect-chrome');
-const sepiaEffect = document.getElementById('effect-sepia');
-const marvinEffect = document.getElementById('effect-marvin');
-const phobosEffect = document.getElementById('effect-phobos');
-const heatEffect = document.getElementById('effect-heat');
-
 noUiSlider.create(sliderElement, {
   range: {
     min: 0,
@@ -214,69 +247,6 @@ heatEffect.addEventListener('click', () => {
   });
 });
 
-//Util button
-const escapeButton = (evt) => evt.key === 'Escape';
-
-//Open/close modal
-const openModal = () => {
-  editPhotoOverlay.classList.remove('hidden');
-  body.classList.add('modal-open');
-  document.addEventListener('keydown', onDocumentKeydown);
-}
-
-const closeModal = () => {
-  editPhotoOverlay.classList.add('hidden');
-  body.classList.remove('modal-open');
-  imageUploadForm.reset();
-  pristine.reset();
-  editPhotoButton.value = '';
-  effectStyle.style.filter = null;
-  sliderElement.classList.add('hidden');
-  sliderWrapper.classList.add('hidden');
-  downloadPhoto.style.transform = 'scale(1)';
-  document.removeEventListener('keydown', onDocumentKeydown);
-}
-
-const onDocumentKeydown = (evt) => {
-  if (escapeButton(evt)) {
-    evt.preventDefault();
-    closeModal();
-  }
-};
-
-closePhotoEditButton.addEventListener('click', () => {
-  closeModal();
-});
-
-//Error message
-const errorUpload = () => {
-  const ERROR_TIME = 5000;
-  const errorUploadTemplate = document.querySelector('#error').content.querySelector('.error');
-  const errorUploadElement = errorUploadTemplate.cloneNode(true);
-  const errorButton = errorUploadElement.querySelector('.error__button');
-  body.appendChild(errorUploadElement);
-
-  errorButton.addEventListener('click', () => {
-    body.removeChild(errorUploadElement);
-  });
-
-  document.addEventListener( 'click', (evt) => {
-    if (errorUploadTemplate.contains(evt.target)){
-      body.removeChild(errorUploadElement);
-    }
-  })
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      body.removeChild(errorUploadElement);
-    }
-  });
-
-  setTimeout(() => {
-    body.removeChild(errorUploadElement);
-  }, ERROR_TIME);
-};
-
 //Validation
 const hashTag = document.querySelector('.text__hashtags');
 const commentArea = document.querySelector('.text__description');
@@ -368,6 +338,32 @@ const unblockSubmitButton = () => {
   submitButton.textContent = submitButtonText.STATIC;
 };
 
+//Error message
+const errorUpload = () => {
+  const ERROR_TIME = 5000;
+  const errorUploadTemplate = document.querySelector('#error').content.querySelector('.error');
+  const errorUploadElement = errorUploadTemplate.cloneNode(true);
+  const errorButton = errorUploadElement.querySelector('.error__button');
+  body.appendChild(errorUploadElement);
+
+  errorButton.addEventListener('click', () => {
+    body.removeChild(errorUploadElement);
+  }, { once: true });
+
+  document.addEventListener('click', (evt) => {
+    const targetElement = document.querySelector('.error');
+    if (body.contains(evt.target && targetElement)) {
+      body.removeChild(errorUploadElement);
+    }
+  }, { once: true });
+
+  setTimeout(() => {
+    if (body.contains(errorUploadElement)) {
+      body.removeChild(errorUploadElement);
+    }
+  }, ERROR_TIME);
+};
+
 //Success message
 const successMessage = () => {
   const SUCCESS_TIME = 5000;
@@ -378,23 +374,19 @@ const successMessage = () => {
 
   successElementButton.addEventListener('click', () => {
     body.removeChild(successElement);
-  });
+  }, { once: true });
 
-  document.addEventListener( 'click', (evt) => {
-    if (successTemplate.contains(evt.target)){
-      console.log('!');
+  document.addEventListener('click', (evt) => {
+    const targetElement = document.querySelector('.success');
+    if (body.contains(evt.target && targetElement)) {
       body.removeChild(successElement);
     }
-  })
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      body.removeChild(successElement);
-    }
-  });
+  }, { once: true });
 
   setTimeout(() => {
-    body.removeChild(successElement);
+    if (body.contains(successElement)) {
+      body.removeChild(successElement);
+    }
   }, SUCCESS_TIME);
 };
 
@@ -409,26 +401,29 @@ const formSubmit = (onSuccess) => {
       blockSubmitButton();
 
       fetch(
-        'https://30.javascript.pages.academy/kekstagram',
+        'https://30.javascript.pages.ru',
         {
           method: 'POST',
           body: formData,
         },
       )
-      .then((response) => {
-        if (response.ok) {
-          onSuccess();
-        } else {
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Add error');
+          }
+          if (response.ok) {
+            onSuccess();
+          } else {
+            errorUpload();
+          }
+        })
+        .then(() => {
+          successMessage();
+        })
+        .catch(() => {
           errorUpload();
-        }
-      })
-      .then(() => {
-        successMessage();
-      })
-      .catch(() => {
-        errorUpload();
-      })     
-      .finally(unblockSubmitButton)
+        })
+        .finally(unblockSubmitButton);
     }
   });
 };

@@ -7,6 +7,7 @@ const ERROR_TIME = 5000;
 const errorTemplate = document.querySelector('#data-error').content.querySelector('.data-error');
 const errorElement = errorTemplate.cloneNode(true);
 
+/* eslint-disable */
 const loadError = () => {
   body.appendChild(errorElement);
 
@@ -14,7 +15,7 @@ const loadError = () => {
     body.removeChild(errorElement);
   }, ERROR_TIME);
 };
-loadError();
+/* eslint-enable */
 
 //Rendering
 const renderPhoto = (randomPictures) => {
